@@ -3,48 +3,34 @@ import plotly.graph_objects as go
 import random
 
 # =========================
-# CONFIG & THEME (violet clair pro)
+# CONFIG & STYLE
 # =========================
 st.set_page_config(page_title="BO Score", layout="wide")
 
 st.markdown("""
 <style>
     .stApp {
-        background-color: #E7E3FA;
-        color: #2E2B3F;
+        background-color: #FFFFFF;
+        color: #3D2C8D; /* violet foncé pour tout le texte */
         font-family: 'Segoe UI', sans-serif;
     }
-    h1, h2, h3 {
-        color: #3D2C8D;
-        font-weight: 600;
+    h1, h2, h3, label, .stMarkdown, p, div, span {
+        color: #3D2C8D !important;
     }
     .section {
-        font-size: 1.05rem;
+        font-size: 1.1rem;
         font-weight: 600;
-        color: #4B3C8A;
-        margin-top: 0.5rem;
-        margin-bottom: 0.6rem;
-    }
-    .block {
-        background-color: transparent;
-        border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-    }
-    .muted {
-        color: #3A3548;
-        font-size: 0.95rem;
+        color: #3D2C8D;
+        margin-top: 0.8rem;
+        margin-bottom: 0.5rem;
     }
     hr {
         border: none;
-        border-top: 1px solid #C6BCE8;
-        margin: 0.8rem 0;
+        border-top: 1px solid #C7B8F5;
+        margin: 1rem 0;
     }
-    .metric {
-        background-color: rgba(255, 255, 255, 0.15);
-        border-radius: 10px;
-        padding: 0.8rem;
-        text-align: center;
+    .stSlider label {
+        color: #3D2C8D !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -64,28 +50,26 @@ clients = [
 client = random.choice(clients)
 
 # =========================
-# LAYOUT RADIAL (3 x 3)
+# LAYOUT RADIAL (3x3)
 # =========================
 r1c1, r1c2, r1c3 = st.columns([1, 1, 1])
 r2c1, r2c2, r2c3 = st.columns([1, 1, 1])
 r3c1, r3c2, r3c3 = st.columns([1, 1, 1])
 
-# --- TOP LEFT : FICHE CLIENT ---
+# --- FICHE CLIENT ---
 with r1c1:
     st.markdown("<div class='section'>Dossier client</div>", unsafe_allow_html=True)
     st.markdown(
         f"""
-        <div class='muted'>
         <b>Entreprise :</b> {client['nom']}<br>
         <b>Secteur :</b> {client['secteur']}<br>
         <b>Montant demandé :</b> {client['montant']}<br>
         <b>Pays :</b> {client['pays']}<br>
         <b>Analyste référent :</b> {client['analyste']}
-        </div>
         """, unsafe_allow_html=True
     )
 
-# --- BOTTOM LEFT : SLIDERS (CRITÈRES) ---
+# --- SLIDERS (CRITÈRES) ---
 with r3c1:
     st.markdown("<div class='section'>Évaluation des critères</div>", unsafe_allow_html=True)
     solidite = st.slider("Solidité financière", 0, 10, 6)
@@ -105,34 +89,34 @@ score = (
 
 def score_color(val):
     if val < 5:
-        return "#E63946"
+        return "#E63946"  # rouge
     elif val < 8:
-        return "#F4A261"
+        return "#F4A261"  # jaune
     else:
-        return "#2A9D8F"
+        return "#2A9D8F"  # vert
 
-# --- CENTRE : SCORE ---
+# --- SCORE CENTRAL ---
 with r2c2:
     color = score_color(score)
     fig = go.Figure(go.Pie(
         values=[score, 10 - score],
         hole=0.8,
-        marker_colors=[color, "#D3C7F7"],  # violet clair autour
+        marker_colors=[color, "#F2F0FB"],
         textinfo="none"
     ))
     fig.add_annotation(
-        text=f"<span style='font-size:46px; color:{color}; font-weight:600'>{score:.1f}</span><br><span style='font-size:18px; color:#3E3A4F;'>/10</span>",
+        text=f"<span style='font-size:46px; color:{color}; font-weight:600'>{score:.1f}</span><br><span style='font-size:18px; color:#3D2C8D;'>/10</span>",
         x=0.5, y=0.5, showarrow=False
     )
     fig.update_layout(
         showlegend=False,
         margin=dict(t=0, b=0, l=0, r=0),
-        paper_bgcolor="#E7E3FA",  # plus de fond blanc
+        paper_bgcolor="#FFFFFF",  # fond blanc pur
         height=360,
     )
     st.plotly_chart(fig, use_container_width=True)
 
-# --- TOP RIGHT : INDICATEURS ---
+# --- INDICATEURS ---
 with r1c3:
     st.markdown("<div class='section'>Indicateurs complémentaires</div>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3)
@@ -140,7 +124,7 @@ with r1c3:
     c2.metric("Risque ajusté", f"{round((10 - risque) * 10, 1)} / 100")
     c3.metric("Maturité projet", f"{round(experience * 10, 1)} / 100")
 
-# --- BOTTOM RIGHT : VALIDATION ---
+# --- VALIDATION ---
 with r3c3:
     st.markdown("<div class='section'>Validation par l’analyste</div>", unsafe_allow_html=True)
     decision = st.radio("Décision finale :", ["En attente", "Valider le dossier", "Rejeter le dossier"], horizontal=True)
@@ -160,4 +144,4 @@ with r3c3:
     if commentaire:
         st.info(f"Commentaire : {commentaire}")
 
-st.caption("© 2025 BO Score — IA d’aide à la décision. Design clair, contrasté et lisible.")
+st.caption("© 2025 BO Score — IA d’aide à la décision. Thème blanc & texte violet foncé.")
