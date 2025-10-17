@@ -2,6 +2,15 @@ import streamlit as st
 import plotly.graph_objects as go
 import random
 
+st.markdown("""
+    <style>
+        header {visibility: hidden;}
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+    </style>
+""", unsafe_allow_html=True)
+
+
 # =========================
 # CONFIG & STYLE
 # =========================
@@ -214,6 +223,7 @@ with tab_dossier:
     - Projections financières — Données prévisionnelles 2025–2027  
     - Checklist due diligence — Documents juridiques et conformité  
     """)
+
 
 
 
