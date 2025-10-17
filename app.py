@@ -14,7 +14,7 @@ st.markdown("""
         background-color: #FFFFFF;
         color: #3D2C8D;
         font-family: 'Segoe UI', sans-serif;
-        overflow: hidden !important;  /* empêche le scroll */
+        overflow: hidden !important;
         height: 100vh !important;
     }
     h1, h2, h3, label, .stMarkdown, p, div, span {
@@ -78,7 +78,7 @@ clients = [
 client = random.choice(clients)
 
 # =========================
-# LAYOUT (radial compact)
+# LAYOUT
 # =========================
 r1c1, r1c2, r1c3 = st.columns([1, 1, 1])
 r2c1, r2c2, r2c3 = st.columns([1, 1, 1])
@@ -129,30 +129,67 @@ with r2c2:
     color = score_color(score_100)
     placeholder = st.empty()
 
-    steps = max(5, int(score_100 // 2))  # nombre d’étapes de l’animation
+    steps = max(5, int(score_100 // 2))
     for val in range(0, int(score_100) + 1, steps):
         fig = go.Figure(go.Pie(
             values=[val, 100 - val],
             hole=0.8,
             marker_colors=[score_color(val), "#EFEAFB"],
             textinfo="none",
-            sort=False,             # sens horaire
+            sort=False,
             direction="clockwise"
         ))
         fig.add_annotation(
             text=f"<span style='font-size:70px; color:{score_color(val)}; font-weight:700'>{val}</span>",
             x=0.5, y=0.5, showarrow=False
         )
-        fig.update_layout(
-            showlegend=False,
-            margin=dict(t=0, b=0, l=0, r=0),
-            paper_bgcolor="#FFFFFF",
-            height=340,
-        )
+        fig.update_layout(showlegend=False, margin=dict(t=0,b=0,l=0,r=0), paper_bgcolor="#FFFFFF", height=340)
         placeholder.plotly_chart(fig, use_container_width=True)
         time.sleep(0.02)
 
-# --- INDICATEURS ---
+# --- AJOUT 1 : SYNTHÈSE IA ---
+with r2c2:
+    if score_100 >= 80:
+        resume = "Projet robuste avec excellente rentabilité et faible risque. Opportunité recommandée."
+    elif score_100 >= 50:
+        resume = "Projet prometteur, mais nécessite une vérification du risque et de la rentabilité."
+    else:
+        resume = "Risque élevé et rentabilité incertaine. Prudence conseillée avant validation."
+    st.info(f"📋 Synthèse IA : {resume}")
+
+# --- AJOUT 2 : RADAR CHART ---
+with r2c1:
+    radar_fig = go.Figure()
+    radar_fig.add_trace(go.Scatterpolar(
+        r=[solidite, experience, rentabilite, 10 - risque, alignement],
+        theta=["Solidité", "Expérience", "Rentabilité", "Risque", "Alignement"],
+        fill='toself',
+        fillcolor="rgba(61,44,141,0.25)",
+        line_color="#3D2C8D"
+    ))
+    radar_fig.update_layout(
+        polar=dict(radialaxis=dict(visible=True, range=[0,10])),
+        showlegend=False,
+        paper_bgcolor="#FFFFFF",
+        margin=dict(t=0,b=0,l=0,r=0),
+        height=320
+    )
+    st.plotly_chart(radar_fig, use_container_width=True)
+
+# --- AJOUT 3 : RISQUES DÉTECTÉS ---
+with r2c3:
+    risques = []
+    if risque > 7: risques.append("Risque sectoriel élevé")
+    if rentabilite < 5: risques.append("Rentabilité faible")
+    if alignement < 5: risques.append("Alignement stratégique insuffisant")
+    if solidite < 4: risques.append("Solidité financière limitée")
+
+    if risques:
+        st.warning("⚠️ Risques détectés : " + ", ".join(risques))
+    else:
+        st.success("Aucun risque majeur détecté ✅")
+
+# --- INDICATEURS COMPLÉMENTAIRES ---
 with r1c3:
     st.markdown("<div class='section'>Indicateurs complémentaires</div>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3)
@@ -186,4 +223,4 @@ with r3c3:
     if commentaire:
         st.info(f"Commentaire : {commentaire}")
 
-st.caption("© 2025 BO Score — IA d’aide à la décision. Animation compteur fluide.")
+st.caption("© 2025 BO Score — IA d’aide à la décision enrichie (Radar + Synthèse + Risques).")
