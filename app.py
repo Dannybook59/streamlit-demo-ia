@@ -21,20 +21,11 @@ st.markdown(
             color: #3D2C8D;
         }
         .criteria-logo span {
-            color: #7A5AF8; /* Violet plus clair pour le IA */
-        }
-        .criteria-tagline {
-            text-align: center;
-            font-size: 1.1rem;
             color: #7A5AF8;
-            margin-top: -0.5rem;
-            margin-bottom: 1rem;
-            font-weight: 400;
         }
     </style>
 
     <h1 class='criteria-logo'>Criteri<span>IA</span></h1>
-    <div class='criteria-tagline'>Analyse intelligente des dossiers d’investissement</div>
     <hr style='border-top: 1px solid #C7B8F5; margin-top:0.2rem'>
     """,
     unsafe_allow_html=True
@@ -177,7 +168,6 @@ with tab_dashboard:
         c2.metric("Risque ajusté", f"{round((10 - risque) * 10, 1)} / 100")
         c3.metric("Maturité", f"{round(experience * 10, 1)} / 100")
 
-        # Résumé du score directement sous les indicateurs (avec vraies couleurs)
         if score_100 >= 80:
             message = f"Score {score_100:.0f} — Dossier solide, validation recommandée."
             style = "background-color:#E8F9F1; color:#2A9D8F; border-left:6px solid #2A9D8F;"
@@ -198,7 +188,7 @@ with tab_dashboard:
             unsafe_allow_html=True
         )
 
-    # --- VALIDATION ET COMMENTAIRE (ronds à droite) ---
+    # --- VALIDATION ET COMMENTAIRE ---
     st.markdown("<hr>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1.3, 1.2, 1.5])
