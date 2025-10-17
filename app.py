@@ -157,12 +157,21 @@ with tab_dashboard:
         c3.metric("Maturité", f"{round(experience * 10, 1)} / 100")
 
         # Résumé du score directement sous les indicateurs
+               # Résumé du score directement sous les indicateurs (coloré selon la note)
         if score_100 >= 80:
-            st.markdown(f"<p style='margin-top:10px; color:#2A9D8F; font-weight:600;'>Score {score_100:.0f} — Dossier solide, validation recommandée.</p>", unsafe_allow_html=True)
+            color_txt = "#2A9D8F"  # vert
+            message = f"Score {score_100:.0f} — Dossier solide, validation recommandée."
         elif score_100 >= 50:
-            st.markdown(f"<p style='margin-top:10px; color:#F4A261; font-weight:600;'>Score {score_100:.0f} — Dossier intéressant, à vérifier.</p>", unsafe_allow_html=True)
+            color_txt = "#F4A261"  # orange
+            message = f"Score {score_100:.0f} — Dossier intéressant, à vérifier."
         else:
-            st.markdown(f"<p style='margin-top:10px; color:#E63946; font-weight:600;'>Score {score_100:.0f} — Risque élevé, validation non conseillée.</p>", unsafe_allow_html=True)
+            color_txt = "#E63946"  # rouge
+            message = f"Score {score_100:.0f} — Risque élevé, validation non conseillée."
+
+        st.markdown(
+            f"<p style='margin-top:12px; font-weight:700; font-size:1.1rem; color:{color_txt};'>{message}</p>",
+            unsafe_allow_html=True
+        )
 
     # --- VALIDATION ET COMMENTAIRE ---
     st.markdown("<hr>", unsafe_allow_html=True)
@@ -199,5 +208,6 @@ with tab_dossier:
     - Projections financières — Données prévisionnelles 2025–2027  
     - Checklist due diligence — Documents juridiques et conformité  
     """)
+
 
 
