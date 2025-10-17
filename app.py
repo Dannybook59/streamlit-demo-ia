@@ -4,8 +4,7 @@ import random
 
 # --- CONFIGURATION DE LA PAGE ---
 st.set_page_config(
-    page_title="BO Score - IA Scoring",
-    page_icon="📊",
+    page_title="BO Score - Scoring IA",
     layout="centered"
 )
 
@@ -13,26 +12,42 @@ st.set_page_config(
 st.markdown("""
     <style>
         .stApp {
-            background: linear-gradient(135deg, #0d1117 0%, #1c2331 100%);
-            color: #f0f0f0;
+            background-color: #f7f9fb;
+            color: #2b2b2b;
+            font-family: 'Segoe UI', sans-serif;
         }
         h1, h2, h3 {
-            color: #00b4d8 !important;
+            color: #1e2a38 !important;
+            font-weight: 400 !important;
             text-align: center;
         }
         .client-box {
-            background-color: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            padding: 1rem 2rem;
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 1.2rem 2rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e0e4e8;
+        }
+        .block-container {
+            padding: 2rem 3rem;
+        }
+        .stSlider label {
+            color: #2b2b2b !important;
+            font-weight: 400 !important;
+        }
+        .stRadio label {
+            color: #2b2b2b !important;
+        }
+        textarea {
+            border-radius: 8px !important;
         }
     </style>
 """, unsafe_allow_html=True)
 
 # --- EN-TÊTE ---
-st.title("📊 BO Score")
-st.markdown("### IA d’analyse et de notation des dossiers d’investissement")
+st.title("BO Score")
+st.markdown("### Système d’évaluation IA des dossiers d’investissement")
 st.markdown("---")
 
 # --- DONNÉES CLIENT FACTICES ---
@@ -70,7 +85,7 @@ clients = [
 client = random.choice(clients)
 
 # --- FICHE CLIENT ---
-st.subheader("📁 Dossier client")
+st.subheader("Dossier client")
 st.markdown(
     f"""
     <div class='client-box'>
@@ -85,7 +100,7 @@ st.markdown(
 )
 
 # --- SAISIE DES CRITÈRES ---
-st.header("1️⃣ Évaluation des critères")
+st.header("1. Évaluation des critères")
 
 col1, col2 = st.columns(2)
 with col1:
@@ -99,7 +114,7 @@ with col2:
 st.markdown("---")
 
 # --- CALCUL DU SCORE ---
-st.header("2️⃣ Résultat du scoring BO")
+st.header("2. Résultat du BO Score")
 
 score = (
     solidite * 0.3
@@ -111,49 +126,47 @@ score = (
 
 # --- COULEUR DU CERCLE SELON LE SCORE ---
 if score < 5:
-    circle_color = "#ef476f"  # Rouge
+    circle_color = "#e63946"  # Rouge
 elif score < 8:
-    circle_color = "#ffd166"  # Jaune
+    circle_color = "#fcbf49"  # Jaune
 else:
-    circle_color = "#06d6a0"  # Vert
+    circle_color = "#2a9d8f"  # Vert
 
 # --- VISUEL : CERCLE PLEIN DU SCORE ---
 fig = go.Figure(go.Pie(
     values=[score, 10 - score],
     hole=0.7,
-    marker_colors=[circle_color, "rgba(255,255,255,0.08)"],
+    marker_colors=[circle_color, "#eaecef"],
     textinfo="none"
 ))
 
 fig.add_annotation(
-    text=f"<b>{score:.1f}</b><br>/10",
-    x=0.5, y=0.5,
-    font=dict(size=40, color=circle_color),
-    showarrow=False
+    text=f"<span style='font-size:36px; color:{circle_color}'>{score:.1f}</span><br><span style='font-size:18px;'>/10</span>",
+    x=0.5, y=0.5, showarrow=False
 )
 
 fig.update_layout(
     showlegend=False,
     margin=dict(t=0, b=0, l=0, r=0),
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)",
-    height=320
+    paper_bgcolor="#f7f9fb",
+    plot_bgcolor="#f7f9fb",
+    height=300
 )
 
 st.plotly_chart(fig, use_container_width=True)
 
 # --- INTERPRÉTATION DU SCORE ---
 if score >= 8:
-    st.success("✅ Dossier **très favorable** : excellente solidité et forte rentabilité.")
+    st.success("Dossier très favorable : excellente solidité et forte rentabilité.")
 elif score >= 6:
-    st.warning("⚠️ Dossier **intéressant** : nécessite une validation approfondie.")
+    st.warning("Dossier intéressant : nécessite une validation approfondie.")
 else:
-    st.error("❌ Dossier **à risque** : plusieurs indicateurs financiers sont faibles.")
+    st.error("Dossier à risque : plusieurs indicateurs faibles.")
 
 st.markdown("---")
 
 # --- VALIDATION HUMAINE ---
-st.header("3️⃣ Validation par l’analyste")
+st.header("3. Validation par l’analyste")
 validation = st.radio(
     "Décision finale :",
     ["En attente", "Valider le dossier", "Rejeter le dossier"],
@@ -163,9 +176,9 @@ validation = st.radio(
 commentaire = st.text_area("Commentaires ou observations")
 
 if validation != "En attente":
-    st.success(f"✅ Décision enregistrée : **{validation}**")
+    st.success(f"Décision enregistrée : **{validation}**")
     if commentaire:
-        st.info(f"💬 Commentaire : {commentaire}")
+        st.info(f"Commentaire : {commentaire}")
 
 st.markdown("---")
-st.caption("© 2025 BO Score — IA d’aide à la décision. RGPD & AMF compliant.")
+st.caption("© 2025 BO Score — IA d’aide à la décision. Tous droits réservés.")
