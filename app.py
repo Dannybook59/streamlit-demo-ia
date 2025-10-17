@@ -2,13 +2,29 @@ import streamlit as st
 import plotly.graph_objects as go
 import random
 
-st.markdown("""
+st.markdown(
+    """
     <style>
-        header {visibility: hidden;}
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
+        .criteria-logo {
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 700;
+            font-size: 3rem;
+            text-align: center;
+            margin-top: -0.5rem;
+            margin-bottom: 0.5rem;
+            color: #3D2C8D;
+        }
+        .criteria-logo span {
+            color: #7A5AF8; /* Violet plus clair pour le IA */
+        }
     </style>
-""", unsafe_allow_html=True)
+
+    <h1 class='criteria-logo'>Criteri<span>IA</span></h1>
+    <hr style='border-top: 1px solid #C7B8F5; margin-top:0.2rem'>
+    """,
+    unsafe_allow_html=True
+)
+
 
 
 # =========================
@@ -183,6 +199,7 @@ with tab_dossier:
     - Projections financières — Données prévisionnelles 2025–2027  
     - Checklist due diligence — Documents juridiques et conformité  
     """)
+
 
 
 
