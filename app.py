@@ -1,6 +1,7 @@
 import streamlit as st
 import plotly.graph_objects as go
 import random
+import time
 
 # =========================
 # CONFIG & STYLE
@@ -9,10 +10,12 @@ st.set_page_config(page_title="BO Score", layout="wide")
 
 st.markdown("""
 <style>
-    .stApp {
+    html, body, .stApp {
         background-color: #FFFFFF;
         color: #3D2C8D;
         font-family: 'Segoe UI', sans-serif;
+        overflow: hidden !important;  /* empêche le scroll */
+        height: 100vh !important;
     }
     h1, h2, h3, label, .stMarkdown, p, div, span {
         color: #3D2C8D !important;
@@ -21,7 +24,7 @@ st.markdown("""
         text-align: center;
         color: #3D2C8D;
         font-size: 3rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.5rem;
         margin-top: -0.5rem;
         font-weight: 700;
     }
@@ -35,13 +38,19 @@ st.markdown("""
     hr {
         border: none;
         border-top: 1px solid #C7B8F5;
-        margin: 1rem 0;
+        margin: 0.8rem 0;
     }
     .comment-box {
         border: 2px solid #C7B8F5;
         border-radius: 8px;
         background-color: #FFFFFF;
         padding: 0.8rem;
+    }
+    textarea {
+        background-color: #FFFFFF !important;
+        color: #3D2C8D !important;
+        border: 1px solid #C7B8F5 !important;
+        border-radius: 6px !important;
     }
     .radio-group {
         border: 2px solid #C7B8F5;
@@ -69,7 +78,7 @@ clients = [
 client = random.choice(clients)
 
 # =========================
-# LAYOUT RADIAL
+# LAYOUT (radial, compact)
 # =========================
 r1c1, r1c2, r1c3 = st.columns([1, 1, 1])
 r2c1, r2c2, r2c3 = st.columns([1, 1, 1])
@@ -115,26 +124,31 @@ def score_color(val):
     else:
         return "#2A9D8F"  # vert
 
-# --- SCORE CENTRAL ---
+# --- SCORE CENTRAL AVEC ANIMATION ---
 with r2c2:
     color = score_color(score_100)
-    fig = go.Figure(go.Pie(
-        values=[score_100, 100 - score_100],
-        hole=0.8,
-        marker_colors=[color, "#EFEAFB"],
-        textinfo="none"
-    ))
-    fig.add_annotation(
-        text=f"<span style='font-size:46px; color:{color}; font-weight:600'>{score_100:.0f}</span><br><span style='font-size:18px; color:#3D2C8D;'>/100</span>",
-        x=0.5, y=0.5, showarrow=False
-    )
-    fig.update_layout(
-        showlegend=False,
-        margin=dict(t=0, b=0, l=0, r=0),
-        paper_bgcolor="#FFFFFF",
-        height=360,
-    )
-    st.plotly_chart(fig, use_container_width=True)
+    placeholder = st.empty()
+
+    # animation du score
+    for val in range(0, int(score_100) + 1, 3):
+        fig = go.Figure(go.Pie(
+            values=[val, 100 - val],
+            hole=0.8,
+            marker_colors=[score_color(val), "#EFEAFB"],
+            textinfo="none"
+        ))
+        fig.add_annotation(
+            text=f"<span style='font-size:70px; color:{score_color(val)}; font-weight:700'>{val}</span>",
+            x=0.5, y=0.5, showarrow=False
+        )
+        fig.update_layout(
+            showlegend=False,
+            margin=dict(t=0, b=0, l=0, r=0),
+            paper_bgcolor="#FFFFFF",
+            height=340,
+        )
+        placeholder.plotly_chart(fig, use_container_width=True)
+        time.sleep(0.02)
 
 # --- INDICATEURS ---
 with r1c3:
@@ -152,21 +166,21 @@ with r3c3:
     st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("<div class='comment-box'>", unsafe_allow_html=True)
-    commentaire = st.text_area("Commentaires / observations", height=120, label_visibility="collapsed")
+    commentaire = st.text_area("Commentaires / observations", height=100, label_visibility="collapsed")
     st.markdown("</div>", unsafe_allow_html=True)
 
     if decision == "Valider le dossier":
-        synthese = f"Score {score_100:.0f}/100 : profil favorable. Validation recommandée."
+        synthese = f"Score {score_100:.0f} : profil favorable. Validation recommandée."
         tone = "success"
     elif decision == "Rejeter le dossier":
-        synthese = f"Score {score_100:.0f}/100 : profil insuffisant. Validation non conseillée."
+        synthese = f"Score {score_100:.0f} : profil insuffisant. Validation non conseillée."
         tone = "error"
     else:
-        synthese = f"Score {score_100:.0f}/100 : décision en attente."
+        synthese = f"Score {score_100:.0f} : décision en attente."
         tone = "warning"
 
     getattr(st, tone)(synthese)
     if commentaire:
         st.info(f"Commentaire : {commentaire}")
 
-st.caption("© 2025 BO Score — IA d’aide à la décision. Thème blanc & texte violet foncé.")
+st.caption("© 2025 BO Score — IA d’aide à la décision. Interface fixe et animée.")
