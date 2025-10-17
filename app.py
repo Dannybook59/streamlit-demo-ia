@@ -59,6 +59,17 @@ st.markdown("""
         background-color: #FFFFFF;
         margin-bottom: 1rem;
     }
+    .halo {
+        border-radius: 50%;
+        width: 260px;
+        height: 260px;
+        margin: auto;
+        position: relative;
+        box-shadow: 0 0 30px 10px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -78,7 +89,7 @@ clients = [
 client = random.choice(clients)
 
 # =========================
-# LAYOUT (radial)
+# LAYOUT
 # =========================
 r1c1, r1c2, r1c3 = st.columns([1, 1, 1])
 r2c1, r2c2, r2c3 = st.columns([1, 1, 1])
@@ -124,22 +135,28 @@ def score_color(val):
     else:
         return "#2A9D8F"  # vert
 
-# --- SCORE CENTRAL (animation sens horaire) ---
+# --- SCORE CENTRAL AVEC HALO ---
 with r2c2:
-    color = score_color(score_100)
     placeholder = st.empty()
 
-    for val in range(0, int(score_100) + 1, 3):
+    for val in range(0, int(score_100) + 1, 2):
+        color = score_color(val)
+        halo_style = f"""
+        <div class="halo" style="box-shadow: 0 0 50px 10px {color}33;">
+        </div>
+        """
+        st.markdown(halo_style, unsafe_allow_html=True)
+
         fig = go.Figure(go.Pie(
             values=[val, 100 - val],
             hole=0.8,
-            marker_colors=[score_color(val), "#EFEAFB"],
+            marker_colors=[color, "#EFEAFB"],
             textinfo="none",
-            sort=False,             # sens horaire
-            direction="clockwise"   # remplissage horaire
+            sort=False,
+            direction="clockwise"
         ))
         fig.add_annotation(
-            text=f"<span style='font-size:70px; color:{score_color(val)}; font-weight:700'>{val}</span>",
+            text=f"<span style='font-size:70px; color:{color}; font-weight:700'>{val}</span>",
             x=0.5, y=0.5, showarrow=False
         )
         fig.update_layout(
@@ -170,12 +187,12 @@ with r3c3:
     commentaire = st.text_area("Commentaires / observations", height=100, label_visibility="collapsed")
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- Recommandation logique selon score ---
+    # --- RECOMMANDATION SELON SCORE ---
     if score_100 >= 80:
         synthese = f"Score {score_100:.0f} : excellent dossier. Validation recommandée ✅"
         tone = "success"
     elif 50 <= score_100 < 80:
-        synthese = f"Score {score_100:.0f} : dossier prometteur, nécessite vérification complémentaire ⚠️"
+        synthese = f"Score {score_100:.0f} : dossier prometteur, à vérifier ⚠️"
         tone = "warning"
     else:
         synthese = f"Score {score_100:.0f} : dossier à risque élevé. Validation non conseillée ❌"
@@ -185,4 +202,4 @@ with r3c3:
     if commentaire:
         st.info(f"Commentaire : {commentaire}")
 
-st.caption("© 2025 BO Score — IA d’aide à la décision. Animation fluide et logique.")
+st.caption("© 2025 BO Score — IA d’aide à la décision. Halo dynamique et compteur fluide.")
