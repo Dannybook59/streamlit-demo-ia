@@ -58,32 +58,36 @@ score = (
     + alignement * 0.1
 )
 
-# --- VISUALISATION CIRCULAIRE DU SCORE ---
-fig = go.Figure(
-    go.Indicator(
-        mode="gauge+number",
-        value=score,
-        domain={'x': [0, 1], 'y': [0, 1]},
-        title={'text': "Score global", 'font': {'size': 20, 'color': '#90e0ef'}},
-        gauge={
-            'axis': {'range': [0, 10], 'tickwidth': 1, 'tickcolor': "#90e0ef"},
-            'bar': {'color': "#00b4d8"},
-            'bgcolor': "rgba(0,0,0,0)",
-            'borderwidth': 2,
-            'bordercolor': "#90e0ef",
-            'steps': [
-                {'range': [0, 5], 'color': "#ef476f"},
-                {'range': [5, 8], 'color': "#ffd166"},
-                {'range': [8, 10], 'color': "#06d6a0"}
-            ]
-        }
-    )  # ✅ Fin du go.Indicator
-)  # ✅ Fin du go.Figure
+# --- COULEUR DU CERCLE SELON LE SCORE ---
+if score < 5:
+    circle_color = "#ef476f"  # Rouge
+elif score < 8:
+    circle_color = "#ffd166"  # Jaune
+else:
+    circle_color = "#06d6a0"  # Vert
+
+# --- VISUEL : CERCLE PLEIN ---
+fig = go.Figure(go.Pie(
+    values=[score, 10 - score],
+    hole=0.7,
+    marker_colors=[circle_color, "rgba(255,255,255,0.08)"],
+    textinfo="none"
+))
+
+# Ajout du texte du score au centre
+fig.add_annotation(
+    text=f"<b>{score:.1f}</b><br>/10",
+    x=0.5, y=0.5,
+    font=dict(size=40, color=circle_color),
+    showarrow=False
+)
 
 fig.update_layout(
+    showlegend=False,
+    margin=dict(t=0, b=0, l=0, r=0),
     paper_bgcolor="rgba(0,0,0,0)",
-    font={'color': "#f0f0f0", 'family': "sans-serif"},
-    height=350
+    plot_bgcolor="rgba(0,0,0,0)",
+    height=320
 )
 
 st.plotly_chart(fig, use_container_width=True)
@@ -98,4 +102,22 @@ else:
 
 st.markdown("---")
 
-# --- VALIDATION HUMAINE
+# --- VALIDATION HUMAINE ---
+st.header("3️⃣ Validation par la commission")
+validation = st.radio(
+    "Décision finale :",
+    ["En attente", "Valider le dossier", "Rejeter le dossier"],
+    horizontal=True
+)
+
+commentaire = st.text_area("Commentaires ou observations")
+
+if validation != "En attente":
+    st.success(f"✅ Décision enregistrée : **{validation}**")
+    if commentaire:
+        st.info(f"💬 Commentaire : {commentaire}")
+
+st.markdown("---")
+st.caption("© 2025 Eurinvest Connect — IA d’aide à la décision. RGPD & AMF compliant.")
+
+
