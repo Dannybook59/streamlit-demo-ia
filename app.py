@@ -2,16 +2,6 @@ import streamlit as st
 import plotly.graph_objects as go
 import random
 
-
-st.markdown("""
-    <style>
-        header {visibility: hidden;}
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-    </style>
-""", unsafe_allow_html=True)
-
-
 # =========================
 # CONFIG & STYLE
 # =========================
@@ -208,7 +198,7 @@ with tab_dashboard:
             unsafe_allow_html=True
         )
 
-    # --- VALIDATION ET COMMENTAIRE ---
+    # --- VALIDATION ET COMMENTAIRE (ronds à droite) ---
     st.markdown("<hr>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1.3, 1.2, 1.5])
@@ -221,7 +211,7 @@ with tab_dashboard:
         nécessaire, puis validez votre recommandation dans la colonne de droite.
         """)
 
-            with col3:
+    with col3:
         st.markdown("<div class='section'>Décision finale</div>", unsafe_allow_html=True)
         st.markdown("<div class='radio-group'>", unsafe_allow_html=True)
         decision = st.radio(
@@ -237,7 +227,7 @@ with tab_dashboard:
         st.markdown("</div>", unsafe_allow_html=True)
 
 # =========================
-# 2️⃣ ONGLET DOSSIER
+# 2️⃣ ONGLET DOSSIER ENTREPRISE (exemple NeoTech)
 # =========================
 with tab_dossier:
     st.markdown("## Dossier complet — NeoTech Ventures")
@@ -300,5 +290,3 @@ with tab_dossier:
     **Date de création :** 2019  
     **Siège social :** EPFL Innovation Park, Lausanne  
     """)
-
-
