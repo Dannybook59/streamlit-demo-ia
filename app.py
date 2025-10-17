@@ -3,9 +3,10 @@ import plotly.graph_objects as go
 import random
 import time
 
-# --- Configuration ---
+# --- CONFIGURATION GLOBALE ---
 st.set_page_config(page_title="BO Score", layout="wide")
 
+# --- STYLE ---
 st.markdown("""
 <style>
 html, body, .stApp {
@@ -27,27 +28,26 @@ h1#bo-score {
     font-weight: 600;
     color: #3D2C8D;
 }
-.halo-wrapper {
+.halo-container {
     position: relative;
     width: 300px;
     height: 300px;
     margin: auto;
 }
-.halo {
+.halo-glow {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    width: 270px;
-    height: 270px;
-    box-shadow: 0 0 60px 15px rgba(0,0,0,0.05);
     animation: pulse 3s ease-in-out infinite;
+    z-index: 0;
 }
 @keyframes pulse {
-    0% { box-shadow: 0 0 30px 5px rgba(61,44,141,0.2); }
-    50% { box-shadow: 0 0 60px 20px rgba(61,44,141,0.4); }
-    100% { box-shadow: 0 0 30px 5px rgba(61,44,141,0.2); }
+    0% { box-shadow: 0 0 30px 10px rgba(61,44,141,0.15); }
+    50% { box-shadow: 0 0 60px 25px rgba(61,44,141,0.35); }
+    100% { box-shadow: 0 0 30px 10px rgba(61,44,141,0.15); }
 }
 .comment-box {
     border: 2px solid #C7B8F5;
@@ -68,7 +68,7 @@ h1#bo-score {
 st.markdown("<h1 id='bo-score'>BO Score</h1>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# --- CLIENTS FACTICES ---
+# --- CLIENT FACTICE ---
 clients = [
     {"nom": "GreenHydro SAS", "secteur": "Énergies renouvelables", "montant": "2,4 M€", "pays": "France", "analyste": "A. Morel"},
     {"nom": "NeoTech Ventures", "secteur": "Technologies médicales", "montant": "1,8 M€", "pays": "Suisse", "analyste": "M. El Amrani"},
@@ -76,6 +76,12 @@ clients = [
     {"nom": "AgriNova Ltd", "secteur": "AgriTech", "montant": "1,2 M€", "pays": "Pays-Bas", "analyste": "C. Bernard"}
 ]
 client = random.choice(clients)
+
+# --- FONCTION COULEUR ---
+def score_color(val):
+    if val < 50: return "#E63946"  # rouge
+    elif val < 80: return "#F4A261"  # orange
+    else: return "#2A9D8F"  # vert
 
 # --- MISE EN PAGE ---
 col1, col2, col3 = st.columns([1, 2, 1])
@@ -92,18 +98,14 @@ with col1:
         """, unsafe_allow_html=True
     )
 
-# --- SCORE ---
-def score_color(val):
-    if val < 50: return "#E63946"
-    elif val < 80: return "#F4A261"
-    else: return "#2A9D8F"
-
+# --- SLIDERS ---
 solidite = st.slider("Solidité financière", 0, 10, 6)
 experience = st.slider("Expérience de l’équipe dirigeante", 0, 10, 7)
 rentabilite = st.slider("Rentabilité estimée du projet", 0, 10, 5)
 risque = st.slider("Risque sectoriel", 0, 10, 4)
 alignement = st.slider("Alignement stratégique", 0, 10, 6)
 
+# --- SCORE ---
 score_10 = (
     solidite * 0.30
     + rentabilite * 0.25
@@ -113,9 +115,18 @@ score_10 = (
 )
 score_100 = round(score_10 * 10, 1)
 
-# --- CERCLE AVEC HALO ---
+# --- SCORE CERCLE ---
 with col2:
-    st.markdown('<div class="halo-wrapper"><div class="halo"></div></div>', unsafe_allow_html=True)
+    color = score_color(score_100)
+    st.markdown(
+        f"""
+        <div class="halo-container">
+            <div class="halo-glow" style="box-shadow: 0 0 60px 25px {color}40;"></div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
     placeholder = st.empty()
     for val in range(0, int(score_100) + 1, 3):
         fig = go.Figure(go.Pie(
@@ -134,7 +145,7 @@ with col2:
             showlegend=False,
             margin=dict(t=0, b=0, l=0, r=0),
             paper_bgcolor="#FFFFFF",
-            height=340,
+            height=300,
         )
         placeholder.plotly_chart(fig, use_container_width=True)
         time.sleep(0.02)
