@@ -2,6 +2,16 @@ import streamlit as st
 import plotly.graph_objects as go
 import random
 
+
+st.markdown("""
+    <style>
+        header {visibility: hidden;}
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+    </style>
+""", unsafe_allow_html=True)
+
+
 # =========================
 # CONFIG & STYLE
 # =========================
@@ -276,3 +286,4 @@ with tab_dossier:
     **Date de création :** 2019  
     **Siège social :** EPFL Innovation Park, Lausanne  
     """)
+
