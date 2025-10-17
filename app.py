@@ -9,40 +9,40 @@ st.set_page_config(page_title="BO Score", layout="wide")
 st.markdown("""
     <style>
         .stApp {
-            background-color: #f6f4fb;
-            color: #2d2a32;
+            background-color: #E9E3F9; /* violet très clair */
+            color: #2B2730;
             font-family: 'Segoe UI', sans-serif;
         }
         h1, h2, h3 {
-            font-weight: 500;
-            color: #4b3c8a;
+            font-weight: 600;
+            color: #4B3C8A; /* violet profond */
         }
         .section-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #5a4ca1;
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
+            color: #5A4CA1;
+            margin-top: 1.2rem;
+            margin-bottom: 0.6rem;
         }
         .client-box, .score-box, .summary-box {
-            background-color: #ffffff;
-            border-radius: 12px;
+            background-color: #F8F6FC;
+            border-radius: 10px;
             padding: 1rem 1.5rem;
-            border: 1px solid #e3def5;
-            box-shadow: 0 2px 6px rgba(75, 60, 138, 0.05);
+            border: 1px solid #D2C9F2;
+            box-shadow: 0 2px 8px rgba(75, 60, 138, 0.08);
             margin-bottom: 1.5rem;
         }
         .metric-label {
-            color: #6a637a;
+            color: #4B4B4B;
             font-size: 0.9rem;
         }
         .metric-value {
             font-weight: 600;
             font-size: 1.1rem;
-            color: #4b3c8a;
+            color: #4B3C8A;
         }
         .stSlider label, .stRadio label {
-            color: #2d2a32 !important;
+            color: #2B2730 !important;
             font-weight: 400 !important;
         }
         textarea {
@@ -50,7 +50,7 @@ st.markdown("""
         }
         hr {
             border: none;
-            border-top: 1px solid #ded9f1;
+            border-top: 1px solid #C9BFEF;
             margin: 1rem 0;
         }
     </style>
@@ -105,23 +105,23 @@ with col2:
 
     # Couleurs du score (rouge → jaune → vert)
     if score < 5:
-        color = "#e63946"  # rouge doux
+        color = "#E63946"
     elif score < 8:
-        color = "#fcbf49"  # jaune chaud
+        color = "#F4A261"
     else:
-        color = "#2a9d8f"  # vert doux
+        color = "#2A9D8F"
 
     fig = go.Figure(go.Pie(
         values=[score, 10 - score],
         hole=0.7,
-        marker_colors=[color, "#f3effc"],
+        marker_colors=[color, "#E9E3F9"],
         textinfo="none"
     ))
     fig.add_annotation(
         text=f"<span style='font-size:36px; color:{color}'>{score:.1f}</span><br><span style='font-size:18px;'>/10</span>",
         x=0.5, y=0.5, showarrow=False
     )
-    fig.update_layout(showlegend=False, margin=dict(t=0, b=0, l=0, r=0), paper_bgcolor="#ffffff", height=280)
+    fig.update_layout(showlegend=False, margin=dict(t=0, b=0, l=0, r=0), paper_bgcolor="#F8F6FC", height=280)
 
     st.markdown("<div class='score-box'>", unsafe_allow_html=True)
     st.plotly_chart(fig, use_container_width=True)
@@ -134,11 +134,11 @@ with col2:
     colC.metric("Maturité du projet", f"{round(experience * 10, 1)} / 100")
 
     if score >= 8:
-        st.success("Dossier très favorable : excellente solidité et forte rentabilité.")
+        st.success("✅ Dossier très favorable : excellente solidité et forte rentabilité.")
     elif score >= 6:
-        st.warning("Dossier intéressant : nécessite une validation approfondie.")
+        st.warning("⚠️ Dossier intéressant : nécessite une validation approfondie.")
     else:
-        st.error("Dossier à risque : plusieurs indicateurs faibles.")
+        st.error("❌ Dossier à risque : plusieurs indicateurs faibles.")
     st.markdown("</div>", unsafe_allow_html=True)
 
 # --- VALIDATION ---
@@ -166,8 +166,8 @@ if validation != "En attente":
 
     st.write(synthese)
     if commentaire:
-        st.info(f"Commentaire : {commentaire}")
+        st.info(f"💬 Commentaire : {commentaire}")
     st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown("<hr>", unsafe_allow_html=True)
-st.caption("© 2025 BO Score — IA d’aide à la décision. Thème violet clair.")
+st.caption("© 2025 BO Score — IA d’aide à la décision. Thème violet lisible.")
