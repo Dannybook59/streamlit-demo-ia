@@ -2,6 +2,15 @@ import streamlit as st
 import plotly.graph_objects as go
 import random
 
+# Supprimer la barre et l’en-tête Streamlit
+st.markdown("""
+    <style>
+        [data-testid="stToolbar"], [data-testid="stHeader"], [data-testid="stDecoration"] {
+            display: none !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # =========================
 # CONFIG & STYLE
 # =========================
@@ -290,3 +299,4 @@ with tab_dossier:
     **Date de création :** 2019  
     **Siège social :** EPFL Innovation Park, Lausanne  
     """)
+
