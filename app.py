@@ -1,7 +1,6 @@
 import streamlit as st
 import plotly.graph_objects as go
 import random
-import time
 
 # =========================
 # CONFIG & STYLE
@@ -10,44 +9,64 @@ st.set_page_config(page_title="BO Score", layout="wide")
 
 st.markdown("""
 <style>
+    :root {
+        --main-color: #3D2C8D;
+        --light-bg: #FFFFFF;
+    }
     html, body, .stApp {
-        background-color: #FFFFFF;
-        color: #3D2C8D;
+        background-color: var(--light-bg);
+        color: var(--main-color);
         font-family: 'Segoe UI', sans-serif;
         overflow: hidden !important;
         height: 100vh !important;
     }
+    /* TITRE */
     h1#bo-score {
         text-align: center;
-        color: #3D2C8D;
+        color: var(--main-color);
         font-size: 3rem;
         margin-bottom: 0.5rem;
         margin-top: -0.5rem;
         font-weight: 700;
     }
-    .section {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #3D2C8D;
-        margin-top: 0.8rem;
-        margin-bottom: 0.5rem;
+    /* TEXTES GLOBAUX */
+    h1, h2, h3, h4, h5, h6, label, p, div, span, .stMarkdown, .stText, .stSelectbox, .stRadio, .stMetric {
+        color: var(--main-color) !important;
     }
+    /* SLIDERS */
+    .stSlider label, .stSlider span {
+        color: var(--main-color) !important;
+    }
+    /* RADIO & COMMENTAIRES */
+    .comment-box, .radio-group {
+        border: 2px solid #C7B8F5;
+        border-radius: 8px;
+        background-color: var(--light-bg);
+        padding: 0.8rem;
+    }
+    textarea {
+        background-color: var(--light-bg) !important;
+        color: var(--main-color) !important;
+        border: 1px solid #C7B8F5 !important;
+        border-radius: 6px !important;
+    }
+    /* LIGNES & SECTION TITRES */
     hr {
         border: none;
         border-top: 1px solid #C7B8F5;
         margin: 0.8rem 0;
     }
-    .comment-box, .radio-group {
-        border: 2px solid #C7B8F5;
-        border-radius: 8px;
-        background-color: #FFFFFF;
-        padding: 0.8rem;
+    .section {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--main-color);
+        margin-top: 0.8rem;
+        margin-bottom: 0.5rem;
     }
-    textarea {
-        background-color: #FFFFFF !important;
-        color: #3D2C8D !important;
-        border: 1px solid #C7B8F5 !important;
-        border-radius: 6px !important;
+    /* TABS */
+    button[data-baseweb="tab"] {
+        color: var(--main-color) !important;
+        font-weight: 600 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -201,4 +220,4 @@ with tab_dossier:
     **Analyste en charge :** {client['analyste']}
     """)
 
-st.caption("© 2025 BO Score — Interface stable avec dossier en onglet dédié.")
+st.caption("© 2025 BO Score — Interface professionnelle et cohérente.")
