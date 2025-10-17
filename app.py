@@ -2,172 +2,157 @@ import streamlit as st
 import plotly.graph_objects as go
 import random
 
-# --- CONFIGURATION ---
+# =========================
+# CONFIG & THEME (violet clair)
+# =========================
 st.set_page_config(page_title="BO Score", layout="wide")
 
-# --- STYLE GLOBAL ---
 st.markdown("""
-    <style>
-        .stApp {
-            background-color: #E9E3F9; /* violet très clair */
-            color: #2B2730;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        h1, h2, h3 {
-            font-weight: 600;
-            color: #4B3C8A; /* violet profond */
-        }
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #5A4CA1;
-            margin-top: 1.2rem;
-            margin-bottom: 0.6rem;
-        }
-        .client-box, .score-box, .summary-box {
-            background-color: #F8F6FC;
-            border-radius: 10px;
-            padding: 1rem 1.5rem;
-            border: 1px solid #D2C9F2;
-            box-shadow: 0 2px 8px rgba(75, 60, 138, 0.08);
-            margin-bottom: 1.5rem;
-        }
-        .metric-label {
-            color: #4B4B4B;
-            font-size: 0.9rem;
-        }
-        .metric-value {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #4B3C8A;
-        }
-        .stSlider label, .stRadio label {
-            color: #2B2730 !important;
-            font-weight: 400 !important;
-        }
-        textarea {
-            border-radius: 8px !important;
-        }
-        hr {
-            border: none;
-            border-top: 1px solid #C9BFEF;
-            margin: 1rem 0;
-        }
-    </style>
+<style>
+    .stApp{background:#EFEAFB; color:#2b2b2b; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;}
+    h1,h2,h3{color:#4B3C8A; font-weight:600;}
+    .card{
+        background:#FFFFFF;
+        border:1px solid #DCCEF7;
+        border-radius:16px;
+        padding:16px 18px;
+        box-shadow:0 4px 14px rgba(75,60,138,.08);
+    }
+    .section{font-size:1.05rem; font-weight:600; color:#5A4CA1; margin:0 0 10px 0;}
+    .muted{color:#616161; font-size:.92rem;}
+    hr{border:none; border-top:1px solid #DCCEF7; margin:12px 0;}
+</style>
 """, unsafe_allow_html=True)
 
-# --- EN-TÊTE ---
-st.markdown("<h2>BO Score — Évaluation IA des dossiers d’investissement</h2>", unsafe_allow_html=True)
-st.markdown("<hr>", unsafe_allow_html=True)
+st.markdown("## BO Score — Évaluation IA des dossiers d’investissement")
 
-# --- CLIENTS FACTICES ---
+# =========================
+# FAKE CLIENT (au chargement)
+# =========================
 clients = [
-    {"nom": "GreenHydro SAS", "secteur": "Énergies renouvelables", "montant": "2,4 M€", "pays": "France", "analyste": "A. Morel"},
-    {"nom": "NeoTech Ventures", "secteur": "Technologies médicales", "montant": "1,8 M€", "pays": "Suisse", "analyste": "M. El Amrani"},
-    {"nom": "BlueWave Capital", "secteur": "Finance durable", "montant": "3,6 M€", "pays": "Belgique", "analyste": "L. Dupont"},
-    {"nom": "AgriNova Ltd", "secteur": "AgriTech", "montant": "1,2 M€", "pays": "Pays-Bas", "analyste": "C. Bernard"}
+    {"nom":"GreenHydro SAS","secteur":"Énergies renouvelables","montant":"2,4 M€","pays":"France","analyste":"A. Morel"},
+    {"nom":"NeoTech Ventures","secteur":"Technologies médicales","montant":"1,8 M€","pays":"Suisse","analyste":"M. El Amrani"},
+    {"nom":"BlueWave Capital","secteur":"Finance durable","montant":"3,6 M€","pays":"Belgique","analyste":"L. Dupont"},
+    {"nom":"AgriNova Ltd","secteur":"AgriTech","montant":"1,2 M€","pays":"Pays-Bas","analyste":"C. Bernard"},
 ]
 client = random.choice(clients)
 
-# --- DISPOSITION ---
-col1, col2 = st.columns([1, 1])
+# =========================
+# LAYOUT RADIAL (3 x 3)
+# =========================
+# Ligne 1 : TL (fiche) | centre vide | TR (indicateurs)
+r1c1, r1c2, r1c3 = st.columns([1,1,1])
+# Ligne 2 : (vide) | CENTRE (score) | (vide)
+r2c1, r2c2, r2c3 = st.columns([1,1,1])
+# Ligne 3 : BL (sliders) | centre vide | BR (validation)
+r3c1, r3c2, r3c3 = st.columns([1,1,1])
 
-# --- FICHE CLIENT ---
-with col1:
-    st.markdown("<div class='section-title'>Dossier client</div>", unsafe_allow_html=True)
-    st.markdown(f"""
-        <div class='client-box'>
-            <b>Nom de l’entreprise :</b> {client['nom']}<br>
-            <b>Secteur :</b> {client['secteur']}<br>
-            <b>Montant demandé :</b> {client['montant']}<br>
-            <b>Pays :</b> {client['pays']}<br>
-            <b>Analyste référent :</b> {client['analyste']}
+# --------- Top-Left : FICHE CLIENT ---------
+with r1c1:
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.markdown("<div class='section'>Dossier client</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div class='muted'>
+        <b>Entreprise :</b> {client['nom']}<br>
+        <b>Secteur :</b> {client['secteur']}<br>
+        <b>Montant demandé :</b> {client['montant']}<br>
+        <b>Pays :</b> {client['pays']}<br>
+        <b>Analyste référent :</b> {client['analyste']}
         </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("<div class='section-title'>Évaluation des critères</div>", unsafe_allow_html=True)
-    solidite = st.slider("Solidité financière", 0, 10, 6)
-    experience = st.slider("Expérience de l’équipe dirigeante", 0, 10, 7)
-    rentabilite = st.slider("Rentabilité estimée du projet", 0, 10, 5)
-    risque = st.slider("Risque sectoriel", 0, 10, 4)
-    alignement = st.slider("Alignement stratégique", 0, 10, 6)
-
-# --- SCORE + INDICATEURS ---
-with col2:
-    st.markdown("<div class='section-title'>Résultat du BO Score</div>", unsafe_allow_html=True)
-    score = (
-        solidite * 0.3
-        + rentabilite * 0.25
-        + experience * 0.2
-        + (10 - risque) * 0.15
-        + alignement * 0.1
+        """, unsafe_allow_html=True
     )
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    # Couleurs du score (rouge → jaune → vert)
-    if score < 5:
-        color = "#E63946"
-    elif score < 8:
-        color = "#F4A261"
-    else:
-        color = "#2A9D8F"
+# --------- Bottom-Left : CRITÈRES (sliders / interactif) ---------
+with r3c1:
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.markdown("<div class='section'>Évaluation des critères</div>", unsafe_allow_html=True)
+    solidite    = st.slider("Solidité financière",             0, 10, 6)
+    experience  = st.slider("Expérience de l’équipe dirigeante",0, 10, 7)
+    rentabilite = st.slider("Rentabilité estimée du projet",    0, 10, 5)
+    risque      = st.slider("Risque sectoriel",                 0, 10, 4)
+    alignement  = st.slider("Alignement stratégique",           0, 10, 6)
+    st.markdown("</div>", unsafe_allow_html=True)
 
+# --------- SCORE (calcul commun) ---------
+score = (
+    solidite * 0.30
+    + rentabilite * 0.25
+    + experience * 0.20
+    + (10 - risque) * 0.15
+    + alignement * 0.10
+)
+
+def score_color(val: float) -> str:
+    if val < 5:   return "#E63946"  # rouge doux
+    if val < 8:   return "#F4A261"  # jaune chaud
+    return "#2A9D8F"                # vert doux
+
+# --------- Centre : CERCLE DE SCORE ---------
+with r2c2:
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.markdown("<div class='section'>Score global</div>", unsafe_allow_html=True)
+
+    color = score_color(score)
     fig = go.Figure(go.Pie(
         values=[score, 10 - score],
-        hole=0.7,
-        marker_colors=[color, "#E9E3F9"],
+        hole=0.72,
+        marker_colors=[color, "#EFEAFB"],
         textinfo="none"
     ))
     fig.add_annotation(
-        text=f"<span style='font-size:36px; color:{color}'>{score:.1f}</span><br><span style='font-size:18px;'>/10</span>",
+        text=f"<span style='font-size:40px; color:{color}'>{score:.1f}</span><br><span style='font-size:16px; color:#666'>/10</span>",
         x=0.5, y=0.5, showarrow=False
     )
-    fig.update_layout(showlegend=False, margin=dict(t=0, b=0, l=0, r=0), paper_bgcolor="#F8F6FC", height=280)
-
-    st.markdown("<div class='score-box'>", unsafe_allow_html=True)
+    fig.update_layout(
+        showlegend=False,
+        margin=dict(t=0,b=0,l=0,r=0),
+        paper_bgcolor="#FFFFFF",
+        height=320,
+    )
     st.plotly_chart(fig, use_container_width=True)
-
-    # Indicateurs complémentaires
-    st.markdown("##### Indicateurs complémentaires")
-    colA, colB, colC = st.columns(3)
-    colA.metric("Potentiel de rendement", f"{round(rentabilite * 1.2, 1)} %")
-    colB.metric("Risque ajusté", f"{round((10 - risque) * 10, 1)} / 100")
-    colC.metric("Maturité du projet", f"{round(experience * 10, 1)} / 100")
-
-    if score >= 8:
-        st.success("✅ Dossier très favorable : excellente solidité et forte rentabilité.")
-    elif score >= 6:
-        st.warning("⚠️ Dossier intéressant : nécessite une validation approfondie.")
-    else:
-        st.error("❌ Dossier à risque : plusieurs indicateurs faibles.")
     st.markdown("</div>", unsafe_allow_html=True)
 
-# --- VALIDATION ---
-st.markdown("<hr>", unsafe_allow_html=True)
-st.subheader("Validation par l’analyste")
+# --------- Top-Right : INDICATEURS COMPLÉMENTAIRES ---------
+with r1c3:
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.markdown("<div class='section'>Indicateurs complémentaires</div>", unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Potentiel rendement", f"{round(rentabilite * 1.2, 1)} %")
+    c2.metric("Risque ajusté",       f"{round((10 - risque) * 10, 1)} / 100")
+    c3.metric("Maturité projet",     f"{round(experience * 10, 1)} / 100")
+    st.markdown("<hr>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div class='muted'>Poids critères — Solidité 30%, Rentabilité 25%, Expérience 20%, "
+        f"Risque 15% (inversé), Alignement 10%.</div>", unsafe_allow_html=True
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
 
-validation = st.radio(
-    "Décision finale :",
-    ["En attente", "Valider le dossier", "Rejeter le dossier"],
-    horizontal=True
-)
-commentaire = st.text_area("Commentaires ou observations")
+# --------- Bottom-Right : VALIDATION + SYNTHÈSE ---------
+with r3c3:
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.markdown("<div class='section'>Validation par l’analyste</div>", unsafe_allow_html=True)
+    decision = st.radio("Décision finale :", ["En attente","Valider le dossier","Rejeter le dossier"], horizontal=True)
+    commentaire = st.text_area("Commentaires / réserves")
 
-# --- SYNTHÈSE AUTOMATIQUE ---
-if validation != "En attente":
-    st.markdown("<div class='section-title'>Résumé décisionnel</div>", unsafe_allow_html=True)
-    st.markdown("<div class='summary-box'>", unsafe_allow_html=True)
+    st.markdown("<hr>", unsafe_allow_html=True)
+    st.markdown("<div class='section'>Résumé décisionnel</div>", unsafe_allow_html=True)
 
-    if validation == "Valider le dossier":
-        synthese = f"Le dossier **{client['nom']}** obtient un score de {score:.1f}/10. Les indicateurs financiers et stratégiques sont solides. La validation est recommandée."
-    elif validation == "Rejeter le dossier":
-        synthese = f"Le dossier **{client['nom']}** affiche un score de {score:.1f}/10, jugé insuffisant au regard du risque et de la rentabilité. La validation n’est pas conseillée."
+    if decision == "Valider le dossier":
+        synthese = f"Score {score:.1f}/10 : profil favorable. Indicateurs solides ; validation recommandée."
+        tone = "success"
+    elif decision == "Rejeter le dossier":
+        synthese = f"Score {score:.1f}/10 : profil insuffisant au regard du risque/rentabilité ; validation non conseillée."
+        tone = "error"
     else:
-        synthese = f"L’évaluation du dossier **{client['nom']}** (score {score:.1f}/10) reste en attente d’informations complémentaires."
+        synthese = f"Score {score:.1f}/10 : décision en attente d’éléments complémentaires."
+        tone = "warning"
 
-    st.write(synthese)
+    getattr(st, tone)(synthese)
     if commentaire:
-        st.info(f"💬 Commentaire : {commentaire}")
+        st.info(f"Commentaire : {commentaire}")
     st.markdown("</div>", unsafe_allow_html=True)
 
-st.markdown("<hr>", unsafe_allow_html=True)
-st.caption("© 2025 BO Score — IA d’aide à la décision. Thème violet lisible.")
+# --------- Footer ---------
+st.caption("© 2025 BO Score — IA d’aide à la décision. Thème violet clair, layout radial.")
