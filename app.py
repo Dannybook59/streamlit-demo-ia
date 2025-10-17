@@ -158,18 +158,24 @@ with tab_dashboard:
 
         # Résumé du score directement sous les indicateurs
                # Résumé du score directement sous les indicateurs (coloré selon la note)
+            # Résumé du score directement sous les indicateurs (vraies couleurs visibles)
         if score_100 >= 80:
-            color_txt = "#2A9D8F"  # vert
             message = f"Score {score_100:.0f} — Dossier solide, validation recommandée."
+            style = "background-color:#E8F9F1; color:#2A9D8F; border-left:6px solid #2A9D8F;"
         elif score_100 >= 50:
-            color_txt = "#F4A261"  # orange
             message = f"Score {score_100:.0f} — Dossier intéressant, à vérifier."
+            style = "background-color:#FFF4E0; color:#F4A261; border-left:6px solid #F4A261;"
         else:
-            color_txt = "#E63946"  # rouge
             message = f"Score {score_100:.0f} — Risque élevé, validation non conseillée."
+            style = "background-color:#FDEAEA; color:#E63946; border-left:6px solid #E63946;"
 
         st.markdown(
-            f"<p style='margin-top:12px; font-weight:700; font-size:1.1rem; color:{color_txt};'>{message}</p>",
+            f"""
+            <div style="{style} padding:10px 15px; border-radius:6px; margin-top:15px;
+                        font-weight:700; font-size:1.05rem;">
+                {message}
+            </div>
+            """,
             unsafe_allow_html=True
         )
 
@@ -208,6 +214,7 @@ with tab_dossier:
     - Projections financières — Données prévisionnelles 2025–2027  
     - Checklist due diligence — Documents juridiques et conformité  
     """)
+
 
 
 
