@@ -31,7 +31,6 @@ st.markdown("""
 # --- EN-TÊTE ---
 st.title("💼 Eurinvest Connect")
 st.markdown("### Outil d’aide à la décision IA & validation humaine")
-
 st.markdown("---")
 
 # --- SECTION : ÉVALUATION DES CRITÈRES ---
@@ -60,15 +59,43 @@ score = (
 )
 
 # --- VISUALISATION CIRCULAIRE DU SCORE ---
-fig = go.Figure(go.Indicator(
-    mode="gauge+number",
-    value=score,
-    domain={'x': [0, 1], 'y': [0, 1]},
-    title={'text': "Score global", 'font': {'size': 20, 'color': '#90e0ef'}},
-    gauge={
-        'axis': {'range': [0, 10], 'tickwidth': 1, 'tickcolor': "#90e0ef"},
-        'bar': {'color': "#00b4d8"},
-        'bgcolor': "rgba(0,0,0,0)",
-        'borderwidth': 2
+fig = go.Figure(
+    go.Indicator(
+        mode="gauge+number",
+        value=score,
+        domain={'x': [0, 1], 'y': [0, 1]},
+        title={'text': "Score global", 'font': {'size': 20, 'color': '#90e0ef'}},
+        gauge={
+            'axis': {'range': [0, 10], 'tickwidth': 1, 'tickcolor': "#90e0ef"},
+            'bar': {'color': "#00b4d8"},
+            'bgcolor': "rgba(0,0,0,0)",
+            'borderwidth': 2,
+            'bordercolor': "#90e0ef",
+            'steps': [
+                {'range': [0, 5], 'color': "#ef476f"},
+                {'range': [5, 8], 'color': "#ffd166"},
+                {'range': [8, 10], 'color': "#06d6a0"}
+            ]
+        }
+    )  # ✅ Fin du go.Indicator
+)  # ✅ Fin du go.Figure
 
+fig.update_layout(
+    paper_bgcolor="rgba(0,0,0,0)",
+    font={'color': "#f0f0f0", 'family': "sans-serif"},
+    height=350
+)
 
+st.plotly_chart(fig, use_container_width=True)
+
+# --- INTERPRÉTATION DU SCORE ---
+if score >= 8:
+    st.success("✅ Dossier **très favorable** : forte solidité et rentabilité.")
+elif score >= 6:
+    st.warning("⚠️ Dossier **intéressant** : nécessite validation approfondie.")
+else:
+    st.error("❌ Dossier **à risque** : plusieurs indicateurs faibles.")
+
+st.markdown("---")
+
+# --- VALIDATION HUMAINE
