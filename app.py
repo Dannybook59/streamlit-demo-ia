@@ -49,7 +49,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- COULEURS & CSS GLOBAL ---
+# --- COULEURS & CSS GLOBAL (corrigé pour le scroll) ---
 st.markdown("""
 <style>
     :root {
@@ -60,8 +60,8 @@ st.markdown("""
         background-color: var(--light-bg);
         color: var(--main-color);
         font-family: 'Segoe UI', sans-serif;
-        overflow: hidden !important;
-        height: 100vh !important;
+        overflow-y: auto !important;  /* ✅ permet le scroll vertical */
+        height: auto !important;
     }
     h1, h2, h3, h4, h5, h6, label, p, div, span, .stMarkdown, .stText, .stSelectbox, .stRadio, .stMetric {
         color: var(--main-color) !important;
@@ -96,9 +96,9 @@ st.markdown("""
     }
     .block-container {
         padding-top: 1rem;
-        padding-bottom: 0rem;
-        height: 90vh;
-        overflow: hidden !important;
+        padding-bottom: 1rem;
+        height: auto !important;      /* ✅ enlève la hauteur fixe */
+        overflow-y: auto !important;  /* ✅ autorise le scroll */
     }
 </style>
 """, unsafe_allow_html=True)
@@ -186,7 +186,6 @@ with tab_dashboard:
         c2.metric("Risque ajusté", f"{round((10 - risque) * 10, 1)} / 100")
         c3.metric("Maturité", f"{round(experience * 10, 1)} / 100")
 
-        # Résumé du score directement sous les indicateurs (avec vraies couleurs)
         if score_100 >= 80:
             message = f"Score {score_100:.0f} — Dossier solide, validation recommandée."
             style = "background-color:#E8F9F1; color:#2A9D8F; border-left:6px solid #2A9D8F;"
@@ -207,9 +206,8 @@ with tab_dashboard:
             unsafe_allow_html=True
         )
 
-    # --- VALIDATION ET COMMENTAIRE (ronds à droite) ---
+    # --- VALIDATION ET COMMENTAIRE ---
     st.markdown("<hr>", unsafe_allow_html=True)
-
     col1, col2, col3 = st.columns([1.3, 1.2, 1.5])
 
     with col1:
@@ -229,14 +227,13 @@ with tab_dashboard:
             horizontal=True
         )
         st.markdown("</div>", unsafe_allow_html=True)
-
         st.markdown("<div class='section' style='margin-top:10px;'>Commentaires</div>", unsafe_allow_html=True)
         st.markdown("<div class='comment-box'>", unsafe_allow_html=True)
         commentaire = st.text_area("Commentaires / observations", height=90, label_visibility="collapsed")
         st.markdown("</div>", unsafe_allow_html=True)
 
 # =========================
-# 2️⃣ ONGLET DOSSIER ENTREPRISE (exemple NeoTech)
+# 2️⃣ ONGLET DOSSIER ENTREPRISE
 # =========================
 with tab_dossier:
     st.markdown("## Dossier complet — NeoTech Ventures")
@@ -299,4 +296,5 @@ with tab_dossier:
     **Date de création :** 2019  
     **Siège social :** EPFL Innovation Park, Lausanne  
     """)
+
 
