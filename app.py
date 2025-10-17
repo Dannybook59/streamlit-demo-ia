@@ -9,7 +9,7 @@ st.set_page_config(page_title="BO Score", layout="wide")
 st.markdown("""
     <style>
         .stApp {
-            background-color: #f7f5fb;
+            background-color: #f6f4fb;
             color: #2d2a32;
             font-family: 'Segoe UI', sans-serif;
         }
@@ -20,7 +20,7 @@ st.markdown("""
         .section-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #5e4fa2;
+            color: #5a4ca1;
             margin-top: 1.5rem;
             margin-bottom: 0.5rem;
         }
@@ -28,7 +28,7 @@ st.markdown("""
             background-color: #ffffff;
             border-radius: 12px;
             padding: 1rem 1.5rem;
-            border: 1px solid #e2def0;
+            border: 1px solid #e3def5;
             box-shadow: 0 2px 6px rgba(75, 60, 138, 0.05);
             margin-bottom: 1.5rem;
         }
@@ -50,7 +50,7 @@ st.markdown("""
         }
         hr {
             border: none;
-            border-top: 1px solid #e1dcf3;
+            border-top: 1px solid #ded9f1;
             margin: 1rem 0;
         }
     </style>
@@ -103,18 +103,18 @@ with col2:
         + alignement * 0.1
     )
 
-    # Couleurs mauves douces
+    # Couleurs du score (rouge → jaune → vert)
     if score < 5:
-        color = "#c77dff"  # mauve clair
+        color = "#e63946"  # rouge doux
     elif score < 8:
-        color = "#9d79d6"  # violet doux
+        color = "#fcbf49"  # jaune chaud
     else:
-        color = "#7b6fb7"  # violet profond
+        color = "#2a9d8f"  # vert doux
 
     fig = go.Figure(go.Pie(
         values=[score, 10 - score],
         hole=0.7,
-        marker_colors=[color, "#eeeaf9"],
+        marker_colors=[color, "#f3effc"],
         textinfo="none"
     ))
     fig.add_annotation(
