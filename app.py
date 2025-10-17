@@ -24,30 +24,22 @@ st.markdown("""
             margin-top: 1.5rem;
             margin-bottom: 0.5rem;
         }
-        .client-box {
+        .client-box, .score-box, .summary-box {
             background-color: #ffffff;
             border-radius: 10px;
             padding: 1rem 1.5rem;
             border: 1px solid #dee2e6;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
         }
-        .score-box {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 1.5rem;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            text-align: center;
+        .metric-label {
+            color: #4b5563;
+            font-size: 0.9rem;
         }
-        .stSlider label {
-            color: #2b2b2b !important;
-            font-weight: 400 !important;
-        }
-        .stRadio label {
-            color: #2b2b2b !important;
-        }
-        textarea {
-            border-radius: 8px !important;
+        .metric-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #1d3557;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -63,7 +55,6 @@ clients = [
     {"nom": "BlueWave Capital", "secteur": "Finance durable", "montant": "3,6 M€", "pays": "Belgique", "analyste": "L. Dupont"},
     {"nom": "AgriNova Ltd", "secteur": "AgriTech", "montant": "1,2 M€", "pays": "Pays-Bas", "analyste": "C. Bernard"}
 ]
-
 client = random.choice(clients)
 
 # --- DISPOSITION PRINCIPALE ---
@@ -89,7 +80,7 @@ with col1:
     risque = st.slider("Risque sectoriel", 0, 10, 4)
     alignement = st.slider("Alignement stratégique", 0, 10, 6)
 
-# --- SCORE ---
+# --- SCORE ET INDICATEURS ---
 with col2:
     st.markdown("<div class='section-title'>Résultat du BO Score</div>", unsafe_allow_html=True)
     score = (
@@ -100,35 +91,36 @@ with col2:
         + alignement * 0.1
     )
 
-    # Couleur du cercle
+    # Couleur douce selon le score
     if score < 5:
-        color = "#c44d56"  # rouge doux
+        color = "#c44d56"
     elif score < 8:
-        color = "#d3a84f"  # beige/doré
+        color = "#d3a84f"
     else:
-        color = "#5ba67c"  # vert doux
+        color = "#5ba67c"
 
+    # Cercle de score
     fig = go.Figure(go.Pie(
         values=[score, 10 - score],
         hole=0.7,
         marker_colors=[color, "#f1f3f5"],
         textinfo="none"
     ))
-
     fig.add_annotation(
         text=f"<span style='font-size:36px; color:{color}'>{score:.1f}</span><br><span style='font-size:18px;'>/10</span>",
         x=0.5, y=0.5, showarrow=False
     )
-
-    fig.update_layout(
-        showlegend=False,
-        margin=dict(t=0, b=0, l=0, r=0),
-        paper_bgcolor="#ffffff",
-        height=300
-    )
+    fig.update_layout(showlegend=False, margin=dict(t=0, b=0, l=0, r=0), paper_bgcolor="#ffffff", height=280)
 
     st.markdown("<div class='score-box'>", unsafe_allow_html=True)
     st.plotly_chart(fig, use_container_width=True)
+
+    # KPIs complémentaires
+    st.markdown("##### Indicateurs complémentaires")
+    colA, colB, colC = st.columns(3)
+    colA.metric("Potentiel de rendement", f"{round(rentabilite * 1.2, 1)} %")
+    colB.metric("Risque ajusté", f"{round((10 - risque) * 10, 1)} / 100")
+    colC.metric("Maturité du projet", f"{round(experience * 10, 1)} / 100")
 
     if score >= 8:
         st.success("Dossier très favorable : excellente solidité et forte rentabilité.")
@@ -138,7 +130,7 @@ with col2:
         st.error("Dossier à risque : plusieurs indicateurs faibles.")
     st.markdown("</div>", unsafe_allow_html=True)
 
-# --- VALIDATION HUMAINE ---
+# --- VALIDATION ET SYNTHÈSE ---
 st.markdown("<hr>", unsafe_allow_html=True)
 st.subheader("Validation par l’analyste")
 
@@ -147,13 +139,24 @@ validation = st.radio(
     ["En attente", "Valider le dossier", "Rejeter le dossier"],
     horizontal=True
 )
-
 commentaire = st.text_area("Commentaires ou observations")
 
+# --- SYNTHÈSE AUTOMATIQUE ---
 if validation != "En attente":
-    st.success(f"Décision enregistrée : **{validation}**")
+    st.markdown("<div class='section-title'>Résumé décisionnel</div>", unsafe_allow_html=True)
+    st.markdown("<div class='summary-box'>", unsafe_allow_html=True)
+
+    if validation == "Valider le dossier":
+        synthese = f"Le dossier **{client['nom']}** présente un profil favorable (score {score:.1f}/10) avec une solidité financière et une rentabilité satisfaisantes. La validation du dossier est recommandée."
+    elif validation == "Rejeter le dossier":
+        synthese = f"Le dossier **{client['nom']}** obtient un score de {score:.1f}/10. Les indicateurs de risque et de rentabilité sont insuffisants pour envisager une validation."
+    else:
+        synthese = f"L’évaluation du dossier **{client['nom']}** (score {score:.1f}/10) reste en attente d’éléments complémentaires avant décision finale."
+
+    st.write(synthese)
     if commentaire:
         st.info(f"Commentaire : {commentaire}")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown("<hr>", unsafe_allow_html=True)
 st.caption("© 2025 BO Score — IA d’aide à la décision. Tous droits réservés.")
