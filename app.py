@@ -17,66 +17,26 @@ st.markdown("""
 st.set_page_config(page_title="BO Score", layout="wide")
 
 st.markdown("""
+<st.markdown("""
 <style>
-    :root {
-        --main-color: #3D2C8D;
-        --light-bg: #FFFFFF;
-    }
-    html, body, .stApp {
-        background-color: var(--light-bg);
-        color: var(--main-color);
+    .criteria-logo {
         font-family: 'Segoe UI', sans-serif;
-        overflow: hidden !important;
-        height: 100vh !important;
-    }
-    h1#bo-score {
-        text-align: center;
-        color: var(--main-color);
-        font-size: 3rem;
-        margin-bottom: 0.5rem;
-        margin-top: -0.5rem;
         font-weight: 700;
-    }
-    h1, h2, h3, h4, h5, h6, label, p, div, span, .stMarkdown, .stText, .stSelectbox, .stRadio, .stMetric {
-        color: var(--main-color) !important;
-    }
-    .comment-box, .radio-group {
-        border: 2px solid #C7B8F5;
-        border-radius: 8px;
-        background-color: var(--light-bg);
-        padding: 0.8rem;
-    }
-    textarea {
-        background-color: var(--light-bg) !important;
-        color: var(--main-color) !important;
-        border: 1px solid #C7B8F5 !important;
-        border-radius: 6px !important;
-    }
-    hr {
-        border: none;
-        border-top: 1px solid #C7B8F5;
-        margin: 0.8rem 0;
-    }
-    .section {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: var(--main-color);
-        margin-top: 0.8rem;
+        font-size: 3rem;
+        text-align: center;
+        margin-top: -0.5rem;
         margin-bottom: 0.5rem;
+        color: #3D2C8D;
     }
-    button[data-baseweb="tab"] {
-        color: var(--main-color) !important;
-        font-weight: 600 !important;
-    }
-    /* Réduit la hauteur totale pour tout tenir à l’écran */
-    .block-container {
-        padding-top: 1rem;
-        padding-bottom: 0rem;
-        height: 90vh;
-        overflow: hidden !important;
+    .criteria-logo span {
+        color: #7A5AF8; /* Violet plus clair pour le IA */
     }
 </style>
+
+<h1 class='criteria-logo'>Criteri<span>IA</span></h1>
+<hr style='border-top: 1px solid #C7B8F5; margin-top:0.2rem'>
 """, unsafe_allow_html=True)
+
 
 # --- TITRE ---
 st.markdown("<h1 id='bo-score'>BO Score</h1>", unsafe_allow_html=True)
@@ -223,6 +183,7 @@ with tab_dossier:
     - Projections financières — Données prévisionnelles 2025–2027  
     - Checklist due diligence — Documents juridiques et conformité  
     """)
+
 
 
 
