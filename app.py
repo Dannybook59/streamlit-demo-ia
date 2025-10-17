@@ -34,7 +34,7 @@ st.markdown(
     </style>
 
     <h1 class='criteria-logo'>Criteri<span>IA</span></h1>
-    <div class='criteria-tagline'></div>
+    <div class='criteria-tagline'>Analyse intelligente des dossiers d’investissement</div>
     <hr style='border-top: 1px solid #C7B8F5; margin-top:0.2rem'>
     """,
     unsafe_allow_html=True
