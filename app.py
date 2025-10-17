@@ -78,7 +78,7 @@ clients = [
 client = random.choice(clients)
 
 # =========================
-# LAYOUT (radial, compact)
+# LAYOUT (radial)
 # =========================
 r1c1, r1c2, r1c3 = st.columns([1, 1, 1])
 r2c1, r2c2, r2c3 = st.columns([1, 1, 1])
@@ -124,18 +124,19 @@ def score_color(val):
     else:
         return "#2A9D8F"  # vert
 
-# --- SCORE CENTRAL AVEC ANIMATION ---
+# --- SCORE CENTRAL (animation sens horaire) ---
 with r2c2:
     color = score_color(score_100)
     placeholder = st.empty()
 
-    # animation du score
     for val in range(0, int(score_100) + 1, 3):
         fig = go.Figure(go.Pie(
             values=[val, 100 - val],
             hole=0.8,
             marker_colors=[score_color(val), "#EFEAFB"],
-            textinfo="none"
+            textinfo="none",
+            sort=False,             # sens horaire
+            direction="clockwise"   # remplissage horaire
         ))
         fig.add_annotation(
             text=f"<span style='font-size:70px; color:{score_color(val)}; font-weight:700'>{val}</span>",
@@ -148,7 +149,7 @@ with r2c2:
             height=340,
         )
         placeholder.plotly_chart(fig, use_container_width=True)
-        time.sleep(0.02)
+        time.sleep(0.015)
 
 # --- INDICATEURS ---
 with r1c3:
@@ -169,18 +170,19 @@ with r3c3:
     commentaire = st.text_area("Commentaires / observations", height=100, label_visibility="collapsed")
     st.markdown("</div>", unsafe_allow_html=True)
 
-    if decision == "Valider le dossier":
-        synthese = f"Score {score_100:.0f} : profil favorable. Validation recommandée."
+    # --- Recommandation logique selon score ---
+    if score_100 >= 80:
+        synthese = f"Score {score_100:.0f} : excellent dossier. Validation recommandée ✅"
         tone = "success"
-    elif decision == "Rejeter le dossier":
-        synthese = f"Score {score_100:.0f} : profil insuffisant. Validation non conseillée."
-        tone = "error"
-    else:
-        synthese = f"Score {score_100:.0f} : décision en attente."
+    elif 50 <= score_100 < 80:
+        synthese = f"Score {score_100:.0f} : dossier prometteur, nécessite vérification complémentaire ⚠️"
         tone = "warning"
+    else:
+        synthese = f"Score {score_100:.0f} : dossier à risque élevé. Validation non conseillée ❌"
+        tone = "error"
 
     getattr(st, tone)(synthese)
     if commentaire:
         st.info(f"Commentaire : {commentaire}")
 
-st.caption("© 2025 BO Score — IA d’aide à la décision. Interface fixe et animée.")
+st.caption("© 2025 BO Score — IA d’aide à la décision. Animation fluide et logique.")
