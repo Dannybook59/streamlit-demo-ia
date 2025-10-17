@@ -64,4 +64,110 @@ st.markdown("<hr>", unsafe_allow_html=True)
 clients = [
     {"nom": "GreenHydro SAS", "secteur": "Énergies renouvelables", "montant": "2,4 M€", "pays": "France", "analyste": "A. Morel"},
     {"nom": "NeoTech Ventures", "secteur": "Technologies médicales", "montant": "1,8 M€", "pays": "Suisse", "analyste": "M. El Amrani"},
-    {"nom": "BlueWave Capital", "secteur": "Finance durabl
+    {"nom": "BlueWave Capital", "secteur": "Finance durable", "montant": "3,6 M€", "pays": "Belgique", "analyste": "L. Dupont"},
+    {"nom": "AgriNova Ltd", "secteur": "AgriTech", "montant": "1,2 M€", "pays": "Pays-Bas", "analyste": "C. Bernard"}
+]
+client = random.choice(clients)
+
+# --- DISPOSITION ---
+col1, col2 = st.columns([1, 1])
+
+# --- FICHE CLIENT ---
+with col1:
+    st.markdown("<div class='section-title'>Dossier client</div>", unsafe_allow_html=True)
+    st.markdown(f"""
+        <div class='client-box'>
+            <b>Nom de l’entreprise :</b> {client['nom']}<br>
+            <b>Secteur :</b> {client['secteur']}<br>
+            <b>Montant demandé :</b> {client['montant']}<br>
+            <b>Pays :</b> {client['pays']}<br>
+            <b>Analyste référent :</b> {client['analyste']}
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<div class='section-title'>Évaluation des critères</div>", unsafe_allow_html=True)
+    solidite = st.slider("Solidité financière", 0, 10, 6)
+    experience = st.slider("Expérience de l’équipe dirigeante", 0, 10, 7)
+    rentabilite = st.slider("Rentabilité estimée du projet", 0, 10, 5)
+    risque = st.slider("Risque sectoriel", 0, 10, 4)
+    alignement = st.slider("Alignement stratégique", 0, 10, 6)
+
+# --- SCORE + INDICATEURS ---
+with col2:
+    st.markdown("<div class='section-title'>Résultat du BO Score</div>", unsafe_allow_html=True)
+    score = (
+        solidite * 0.3
+        + rentabilite * 0.25
+        + experience * 0.2
+        + (10 - risque) * 0.15
+        + alignement * 0.1
+    )
+
+    # Couleurs mauves douces
+    if score < 5:
+        color = "#c77dff"  # mauve clair
+    elif score < 8:
+        color = "#9d79d6"  # violet doux
+    else:
+        color = "#7b6fb7"  # violet profond
+
+    fig = go.Figure(go.Pie(
+        values=[score, 10 - score],
+        hole=0.7,
+        marker_colors=[color, "#eeeaf9"],
+        textinfo="none"
+    ))
+    fig.add_annotation(
+        text=f"<span style='font-size:36px; color:{color}'>{score:.1f}</span><br><span style='font-size:18px;'>/10</span>",
+        x=0.5, y=0.5, showarrow=False
+    )
+    fig.update_layout(showlegend=False, margin=dict(t=0, b=0, l=0, r=0), paper_bgcolor="#ffffff", height=280)
+
+    st.markdown("<div class='score-box'>", unsafe_allow_html=True)
+    st.plotly_chart(fig, use_container_width=True)
+
+    # Indicateurs complémentaires
+    st.markdown("##### Indicateurs complémentaires")
+    colA, colB, colC = st.columns(3)
+    colA.metric("Potentiel de rendement", f"{round(rentabilite * 1.2, 1)} %")
+    colB.metric("Risque ajusté", f"{round((10 - risque) * 10, 1)} / 100")
+    colC.metric("Maturité du projet", f"{round(experience * 10, 1)} / 100")
+
+    if score >= 8:
+        st.success("Dossier très favorable : excellente solidité et forte rentabilité.")
+    elif score >= 6:
+        st.warning("Dossier intéressant : nécessite une validation approfondie.")
+    else:
+        st.error("Dossier à risque : plusieurs indicateurs faibles.")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# --- VALIDATION ---
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader("Validation par l’analyste")
+
+validation = st.radio(
+    "Décision finale :",
+    ["En attente", "Valider le dossier", "Rejeter le dossier"],
+    horizontal=True
+)
+commentaire = st.text_area("Commentaires ou observations")
+
+# --- SYNTHÈSE AUTOMATIQUE ---
+if validation != "En attente":
+    st.markdown("<div class='section-title'>Résumé décisionnel</div>", unsafe_allow_html=True)
+    st.markdown("<div class='summary-box'>", unsafe_allow_html=True)
+
+    if validation == "Valider le dossier":
+        synthese = f"Le dossier **{client['nom']}** obtient un score de {score:.1f}/10. Les indicateurs financiers et stratégiques sont solides. La validation est recommandée."
+    elif validation == "Rejeter le dossier":
+        synthese = f"Le dossier **{client['nom']}** affiche un score de {score:.1f}/10, jugé insuffisant au regard du risque et de la rentabilité. La validation n’est pas conseillée."
+    else:
+        synthese = f"L’évaluation du dossier **{client['nom']}** (score {score:.1f}/10) reste en attente d’informations complémentaires."
+
+    st.write(synthese)
+    if commentaire:
+        st.info(f"Commentaire : {commentaire}")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+st.markdown("<hr>", unsafe_allow_html=True)
+st.caption("© 2025 BO Score — IA d’aide à la décision. Thème violet clair.")
