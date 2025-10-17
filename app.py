@@ -20,7 +20,6 @@ st.markdown("""
         overflow: hidden !important;
         height: 100vh !important;
     }
-    /* TITRE */
     h1#bo-score {
         text-align: center;
         color: var(--main-color);
@@ -29,15 +28,9 @@ st.markdown("""
         margin-top: -0.5rem;
         font-weight: 700;
     }
-    /* TEXTES GLOBAUX */
     h1, h2, h3, h4, h5, h6, label, p, div, span, .stMarkdown, .stText, .stSelectbox, .stRadio, .stMetric {
         color: var(--main-color) !important;
     }
-    /* SLIDERS */
-    .stSlider label, .stSlider span {
-        color: var(--main-color) !important;
-    }
-    /* RADIO & COMMENTAIRES */
     .comment-box, .radio-group {
         border: 2px solid #C7B8F5;
         border-radius: 8px;
@@ -50,7 +43,6 @@ st.markdown("""
         border: 1px solid #C7B8F5 !important;
         border-radius: 6px !important;
     }
-    /* LIGNES & SECTION TITRES */
     hr {
         border: none;
         border-top: 1px solid #C7B8F5;
@@ -63,15 +55,21 @@ st.markdown("""
         margin-top: 0.8rem;
         margin-bottom: 0.5rem;
     }
-    /* TABS */
     button[data-baseweb="tab"] {
         color: var(--main-color) !important;
         font-weight: 600 !important;
     }
+    /* Réduit la hauteur totale pour tout tenir à l’écran */
+    .block-container {
+        padding-top: 1rem;
+        padding-bottom: 0rem;
+        height: 90vh;
+        overflow: hidden !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# --- TITRE PRINCIPAL ---
+# --- TITRE ---
 st.markdown("<h1 id='bo-score'>BO Score</h1>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
@@ -87,12 +85,12 @@ clients = [
 client = random.choice(clients)
 
 # =========================
-# ONGLET NAVIGATION EN HAUT
+# ONGLET NAVIGATION
 # =========================
 tab_dashboard, tab_dossier = st.tabs(["Tableau de bord", "Dossier entreprise"])
 
 # =========================
-# 1️⃣ ONGLET : TABLEAU DE BORD
+# 1️⃣ TABLEAU DE BORD
 # =========================
 with tab_dashboard:
     col1, col2, col3 = st.columns([1.2, 1, 1.2])
@@ -110,7 +108,6 @@ with tab_dashboard:
             """,
             unsafe_allow_html=True
         )
-
         st.markdown("<hr>", unsafe_allow_html=True)
         solidite = st.slider("Solidité financière", 0, 10, 6)
         experience = st.slider("Expérience de l’équipe dirigeante", 0, 10, 7)
@@ -129,12 +126,9 @@ with tab_dashboard:
     score_100 = round(score_10 * 10, 1)
 
     def score_color(val):
-        if val < 50:
-            return "#E63946"
-        elif val < 80:
-            return "#F4A261"
-        else:
-            return "#2A9D8F"
+        if val < 50: return "#E63946"
+        elif val < 80: return "#F4A261"
+        else: return "#2A9D8F"
 
     # --- SCORE CENTRAL ---
     with col2:
@@ -151,10 +145,10 @@ with tab_dashboard:
             text=f"<span style='font-size:70px; color:{color}; font-weight:700'>{int(score_100)}</span>",
             x=0.5, y=0.5, showarrow=False
         )
-        fig.update_layout(showlegend=False, margin=dict(t=0,b=0,l=0,r=0), paper_bgcolor="#FFFFFF", height=340)
+        fig.update_layout(showlegend=False, margin=dict(t=0,b=0,l=0,r=0), paper_bgcolor="#FFFFFF", height=320)
         st.plotly_chart(fig, use_container_width=True)
 
-    # --- INDICATEURS ---
+    # --- INDICATEURS + COMMENTAIRE SCORE ---
     with col3:
         st.markdown("<div class='section'>Indicateurs complémentaires</div>", unsafe_allow_html=True)
         c1, c2, c3 = st.columns(3)
@@ -162,34 +156,30 @@ with tab_dashboard:
         c2.metric("Risque ajusté", f"{round((10 - risque) * 10, 1)} / 100")
         c3.metric("Maturité", f"{round(experience * 10, 1)} / 100")
 
-    # --- VALIDATION ---
+        # Résumé du score directement sous les indicateurs
+        if score_100 >= 80:
+            st.markdown(f"<p style='margin-top:10px; color:#2A9D8F; font-weight:600;'>Score {score_100:.0f} — Dossier solide, validation recommandée.</p>", unsafe_allow_html=True)
+        elif score_100 >= 50:
+            st.markdown(f"<p style='margin-top:10px; color:#F4A261; font-weight:600;'>Score {score_100:.0f} — Dossier intéressant, à vérifier.</p>", unsafe_allow_html=True)
+        else:
+            st.markdown(f"<p style='margin-top:10px; color:#E63946; font-weight:600;'>Score {score_100:.0f} — Risque élevé, validation non conseillée.</p>", unsafe_allow_html=True)
+
+    # --- VALIDATION ET COMMENTAIRE ---
     st.markdown("<hr>", unsafe_allow_html=True)
     c1, c2 = st.columns([1, 2])
-
     with c1:
         st.markdown("<div class='section'>Décision</div>", unsafe_allow_html=True)
         st.markdown("<div class='radio-group'>", unsafe_allow_html=True)
         decision = st.radio("Décision finale :", ["En attente", "Valider le dossier", "Rejeter le dossier"], horizontal=True)
         st.markdown("</div>", unsafe_allow_html=True)
-
     with c2:
         st.markdown("<div class='section'>Commentaires</div>", unsafe_allow_html=True)
         st.markdown("<div class='comment-box'>", unsafe_allow_html=True)
-        commentaire = st.text_area("Commentaires / observations", height=100, label_visibility="collapsed")
+        commentaire = st.text_area("Commentaires / observations", height=90, label_visibility="collapsed")
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- SYNTHÈSE SCORE ---
-    if score_100 >= 80:
-        st.success(f"Score {score_100:.0f} — Dossier solide, validation recommandée.")
-    elif score_100 >= 50:
-        st.warning(f"Score {score_100:.0f} — Dossier intéressant, à vérifier.")
-    else:
-        st.error(f"Score {score_100:.0f} — Risque élevé, validation non conseillée.")
-    if commentaire:
-        st.info(f"Commentaire : {commentaire}")
-
 # =========================
-# 2️⃣ ONGLET : DOSSIER ENTREPRISE
+# 2️⃣ ONGLET DOSSIER
 # =========================
 with tab_dossier:
     st.markdown(f"## Dossier complet — {client['nom']}")
@@ -199,7 +189,6 @@ with tab_dossier:
     industries lourdes et au transport. L’objectif est de réduire les émissions carbone tout en
     optimisant les coûts de production énergétique.
     """)
-
     st.markdown("<hr>", unsafe_allow_html=True)
     st.markdown("### Documents disponibles :")
     st.markdown("""
@@ -211,13 +200,4 @@ with tab_dossier:
     - Checklist due diligence — Documents juridiques et conformité  
     """)
 
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown("### Informations administratives :")
-    st.markdown(f"""
-    **Pays :** {client['pays']}  
-    **Secteur d’activité :** {client['secteur']}  
-    **Montant demandé :** {client['montant']}  
-    **Analyste en charge :** {client['analyste']}
-    """)
 
-st.caption("© 2025 BO Score — Interface professionnelle et cohérente.")
