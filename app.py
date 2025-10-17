@@ -210,14 +210,28 @@ with tab_dashboard:
 
     # --- VALIDATION ET COMMENTAIRE ---
     st.markdown("<hr>", unsafe_allow_html=True)
-    c1, c2 = st.columns([1, 2])
-    with c1:
-        st.markdown("<div class='section'>Décision</div>", unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns([1.3, 1.2, 1.5])
+
+    with col1:
+        st.markdown("<div class='section'>Synthèse du dossier</div>", unsafe_allow_html=True)
+        st.write("""
+        Vérifiez les critères principaux et les indicateurs avant de formuler
+        une décision finale. Utilisez les curseurs pour ajuster les valeurs si
+        nécessaire, puis validez votre recommandation dans la colonne de droite.
+        """)
+
+            with col3:
+        st.markdown("<div class='section'>Décision finale</div>", unsafe_allow_html=True)
         st.markdown("<div class='radio-group'>", unsafe_allow_html=True)
-        decision = st.radio("Décision finale :", ["En attente", "Valider le dossier", "Rejeter le dossier"], horizontal=True)
+        decision = st.radio(
+            "Choisir une option :",
+            ["En attente", "Valider le dossier", "Rejeter le dossier"],
+            horizontal=True
+        )
         st.markdown("</div>", unsafe_allow_html=True)
-    with c2:
-        st.markdown("<div class='section'>Commentaires</div>", unsafe_allow_html=True)
+
+        st.markdown("<div class='section' style='margin-top:10px;'>Commentaires</div>", unsafe_allow_html=True)
         st.markdown("<div class='comment-box'>", unsafe_allow_html=True)
         commentaire = st.text_area("Commentaires / observations", height=90, label_visibility="collapsed")
         st.markdown("</div>", unsafe_allow_html=True)
@@ -286,4 +300,5 @@ with tab_dossier:
     **Date de création :** 2019  
     **Siège social :** EPFL Innovation Park, Lausanne  
     """)
+
 
