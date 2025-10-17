@@ -192,3 +192,4 @@ with tab_dashboard:
             <div style="{style} padding:10px 15px; border-radius:6px; margin-top:15px;
                         font-weight:700; font-size:1.05rem;">
                 {message}
+           
