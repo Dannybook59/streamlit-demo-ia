@@ -2,6 +2,23 @@ import streamlit as st
 import plotly.graph_objects as go
 import random
 
+st.set_page_config(page_title="CriteriA", layout="wide", initial_sidebar_state="collapsed")
+
+# Force le thème clair
+st.markdown("""
+    <style>
+        [data-testid="stAppViewContainer"], .stApp {
+            background-color: #FFFFFF !important;
+            color: #3D2C8D !important;
+        }
+        [data-testid="stHeader"] {
+            background: none !important;
+        }
+        [data-testid="stToolbar"] { display: none !important; }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # =========================
 # CONFIG & STYLE
 # =========================
@@ -167,3 +184,4 @@ with col3:
     st.markdown("<div class='comment-box'>", unsafe_allow_html=True)
     commentaire = st.text_area("Commentaires / observations", height=90, label_visibility="collapsed")
     st.markdown("</div>", unsafe_allow_html=True)
+
